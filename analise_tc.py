@@ -11,6 +11,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from utils import color_palette, scatter_plot, line_plot, select_data
+from utils import boxplot_plot
+
 
 @st.cache
 def read_data():
@@ -19,47 +22,34 @@ def read_data():
                      na_values=['#DIV/0!', '#NUM!', '#VALOR!'],
                      index_col='BACIAS', sep=';', skiprows=1, decimal=',',
                      encoding='latin')
-    tc = tc[['Ventura', 'CHPW', 'Temez', 'Kirpich', 'Ven te Show', 'Pasini',
+    tc = tc[['Ventura', 'CHPW', 'Temez', 'Kirpich', 'Ven te Chow', 'Pasini',
              'Picking', 'Pickering', 'Bransby Willians', 'Giandotti', 'Epsey']]
     return df, tc
-
-@st.cache
-def select_data(df, tc, basins, methods):
-    df_select = []
-    
-    for basin in basins:
-        for method in methods:
-            df_select.append([basin, method, tc[method][tc.index == basin].values[0]])
-
-    return pd.DataFrame(df_select, columns=['Bacias', 'Método',
-                                                         'Tc (h)']).dropna()
 
 
 def sidebar(df, tc):
     methods = st.sidebar.multiselect('Métodos:',
                                      ['todos'] + list(tc.columns),
-                                     default='todos')
-    
+                                     default='todos')    
     if 'todos' in methods:
-        methods = list(tc.columns)
-    
+        methods = list(tc.columns)    
     # Oção para filtrar bacias por classificação de tamanho
     size = st.sidebar.selectbox('Tamanho da bacia',
-                                ['todos', 'macro', 'grande', 'média', 'pequena',
-                                 'micro'])
+                                ['todos', 'macro', 'grande', 'média',
+                                 'pequena', 'micro'])
 
     if size != 'todos':
         select_basins = df[df.Tamanho == size]['BACIAS']
     else:
         select_basins = df['BACIAS']
-    
+
     basins = st.sidebar.multiselect('Bacias:',
                                     ['todas'] + list(select_basins),
                                     default='todas')
 
     if 'todas' in basins:
         basins = list(select_basins)
-    
+
     return methods, basins, size
 
 
@@ -67,66 +57,52 @@ def page1(df, tc):
     # Read data
     # Exibe opção para selecionar métods de cálculo do Tc
     methods, basins, size = sidebar(df, tc)
-    
+    st.subheader("Escolha um tipo de gráfico")
+    my_chart = st.radio('', ['barras', 'boxplot'])
+
     if not basins or not methods:
         st.text('Escolha ao menos um método e uma bacia')
     else:
-        try:
-            df_select = select_data(df, tc, basins, methods)
-    
-            f = sns.catplot(data=df_select, kind='bar', x='Bacias', y='Tc (h)',
-                            hue='Método', aspect=21.7/8.27)
-            f.set_xticklabels(rotation=90)
-            st.pyplot(f)
-    
-        except ValueError:
-    
-            st.text("Não foi encontrado dados para a seleção feita. Tente novamente.")
+        if my_chart == 'barras':
+            try:
+                df_select = select_data(df, tc, basins, methods)
+                clrs = [color_palette[x] for x in methods]
+        
+                f = sns.catplot(data=df_select, kind='bar', x='Bacias', y='Tc (h)',
+                                hue='Método', aspect=21.7/8.27, palette=clrs)
+                f.set_xticklabels(rotation=90)
+                st.pyplot(f)
+        
+            except ValueError:
+                st.text("Não foi encontrado dados para a seleção feita. Tente novamente.")
+        else:
+            boxplot_plot(df, tc, basins, methods, st)
 
 
 def page2(df, tc):
     opt1 = st.sidebar.selectbox('Variável', list(df.columns[1:]))
-    
+
     methods, basins, size = sidebar(df, tc)
-    
+    st.subheader("Escolha um tipo de gráfico")
+    chart_type = st.radio('', ['dispersão', 'linha'])
+
     if not basins or not methods:
         st.text('Escolha ao menos um método e uma bacia')
     else:
-        try:
-            df_select = tc[methods][tc.index.isin(basins)]
-            x_axis = df[df.BACIAS.isin(basins)][opt1]
-            try:
-                n = x_axis.astype(str)
-                x_axis = x_axis.str.replace(',', '.')
-                x_axis[x_axis == '\xa0'] = np.nan
-                x_axis = pd.to_numeric(x_axis)
-            except:
-                pass
-            
-            fig, ax = plt.subplots()
-            
-            for method in methods:
-                plt.scatter(x_axis, df_select[method], label=method)
-            
-            plt.xlabel(opt1)
-            plt.ylabel('Tc (h)')
-            plt.legend()
-    
-            st.pyplot(fig)
-    
-        except ValueError:
-    
-            st.text("Não foi encontrado dados para a seleção feita. Tente novamente.")
-    
-    
+        if chart_type == 'dispersão':
+            scatter_plot(df, tc, basins, methods, opt1, st)
+        if chart_type == 'linha':
+            line_plot(df, tc, basins, methods, opt1, st)
+
 
 """
-# Análise do Tempo de Concetração
+# Análise do Tempo de Concentração
 Comparativo do tempo de concentração entre bacias de acordo com diferentes métodos
 """
 my_page = st.sidebar.radio('Page Navigation', ['page 1', 'page 2'])
 df, tc = read_data()
 df = df.replace(',', '.')
+st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
 
 if my_page == 'page 1':
     page1(df, tc)
