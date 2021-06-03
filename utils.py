@@ -142,7 +142,8 @@ def radar_plot(df, tc, basins, methods, opt1, st):
         for property in list(opt1):
             fig.add_trace(go.Scatterpolar(r=correl[property],
                                           theta=correl['Método'],
-                                          name=property))
+                                          name=property,
+                                          line_close=True))
         fig.update_layout(
           polar=dict(
             radialaxis=dict(
