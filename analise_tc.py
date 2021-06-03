@@ -12,12 +12,12 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from utils import color_palette, scatter_plot, line_plot, select_data
-from utils import boxplot_plot
+from utils import boxplot_plot, radar_plot
 
 
 @st.cache
 def read_data():
-    df = pd.read_csv('base_dados.csv', decimal=',', na_values=[" ", '\xa0'])
+    df = pd.read_csv('base_dados.csv', na_values=[" ", '\xa0'])
     tc = pd.read_csv('tempo_concentracao.csv',
                      na_values=['#DIV/0!', '#NUM!', '#VALOR!'],
                      index_col='BACIAS', sep=';', skiprows=1, decimal=',',
@@ -57,7 +57,7 @@ def page1(df, tc):
     # Read data
     # Exibe opção para selecionar métods de cálculo do Tc
     methods, basins, size = sidebar(df, tc)
-    st.subheader("Escolha um tipo de gráfico")
+    st.subheader("Tipo de gráfico")
     my_chart = st.radio('', ['barras', 'boxplot'])
 
     if not basins or not methods:
@@ -80,19 +80,27 @@ def page1(df, tc):
 
 
 def page2(df, tc):
-    opt1 = st.sidebar.selectbox('Variável', list(df.columns[1:]))
-
     methods, basins, size = sidebar(df, tc)
-    st.subheader("Escolha um tipo de gráfico")
-    chart_type = st.radio('', ['dispersão', 'linha'])
+    st.subheader("Tipo de gráfico")
+    chart_type = st.radio('', ['dispersão', 'linha', 'radar'])
 
     if not basins or not methods:
         st.text('Escolha ao menos um método e uma bacia')
     else:
         if chart_type == 'dispersão':
+            opt1 = st.sidebar.selectbox('Parâmetro', list(df.columns[1:]))
             scatter_plot(df, tc, basins, methods, opt1, st)
         if chart_type == 'linha':
+            opt1 = st.sidebar.selectbox('Parâmetro', list(df.columns[1:]))
             line_plot(df, tc, basins, methods, opt1, st)
+        if chart_type == 'radar':
+            opt1 = st.sidebar.multiselect('Parâmetro:',
+                                     ['todos'] + list(df.columns[1:-1]),
+                                     default='todos')
+            if not opt1:
+                st.text('Escolha ao menos um parâmetro')
+            else:
+                radar_plot(df, tc, basins, methods, opt1, st)
 
 
 """

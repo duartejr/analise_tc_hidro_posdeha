@@ -2,6 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
+
+
 
 color_palette = {'Ventura': "#32964d", 'CHPW':"#83d996", 'Temez':  "#016876",
                  'Kirpich': "#aedbf0", 'Ven te Chow': "#3444bc",
@@ -41,7 +45,7 @@ def scatter_plot(df, tc, basins, methods, opt1, st):
         
         plt.xlabel(opt1)
         plt.ylabel('Tc (h)')
-        plt.legend()
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
 
         st.pyplot(fig)
 
@@ -72,7 +76,7 @@ def line_plot(df, tc, basins, methods, opt1, st):
 
         plt.xlabel(opt1)
         plt.ylabel('Tc (h)')
-        plt.legend()
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         st.pyplot(fig)
         del plot_data
 
@@ -101,3 +105,56 @@ def boxplot_plot(df, tc, basins, methods, st):
     except ValueError:
     
         st.text("Não foi encontrado dados para a seleção feita. Tente novamente.")
+
+
+def radar_plot(df, tc, basins, methods, opt1, st):
+
+    try:
+        df_select = tc[methods][tc.index.isin(basins)]
+        x_axis = df[df.BACIAS.isin(basins)]
+        
+        try:
+            n = x_axis.astype(str)
+            x_axis = x_axis.str.replace(',', '.')
+            x_axis[x_axis == '\xa0'] = np.nan
+            x_axis = pd.to_numeric(x_axis)
+        except:
+            pass
+        
+        correl = pd.DataFrame((), columns=x_axis.columns[1:-1])
+        
+        for x in correl.columns:
+            corr_method = []
+            for method in methods:
+                v1 = pd.DataFrame(np.array([df_select[method],
+                                            x_axis[x].replace(',','.')]).T)
+                v1 = v1.dropna()
+                corr_method.append(v1.corr()[0][1])
+            correl[x] = corr_method
+        
+        correl.insert(0, 'Método', methods)
+                
+        fig = go.Figure()
+        
+        if 'todos' in opt1:
+            opt1 = correl.columns[1:]
+        
+        for property in list(opt1):
+            fig.add_trace(go.Scatterpolar(r=correl[property],
+                                          theta=correl['Método'],
+                                          name=property))
+        fig.update_layout(
+          polar=dict(
+            radialaxis=dict(
+              visible=True,
+              range=[0, 1]
+            )),
+          showlegend=True,
+          title='Correlação'
+        )
+        
+        st.plotly_chart(fig)
+
+    except ValueError:
+        st.text("Não foram encontrados dados para esta seleção. Tente novamente.")
+    
