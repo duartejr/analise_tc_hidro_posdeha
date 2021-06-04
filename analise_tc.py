@@ -22,8 +22,9 @@ def read_data():
                      na_values=['#DIV/0!', '#NUM!', '#VALOR!'],
                      index_col='BACIAS', sep=';', skiprows=1, decimal=',',
                      encoding='latin')
-    tc = tc[['Ventura', 'CHPW', 'Temez', 'Kirpich', 'Ven te Chow', 'Pasini',
-             'Picking', 'Pickering', 'Bransby Willians', 'Giandotti', 'Epsey']]
+    tc = tc[['Bransby Willians', 'CHPW', 'Epsey', 'Giandotti', 'Kirpich',
+             'Pasini', 'Pickering', 'Picking', 'Temez', 'Ven te Chow',
+             'Ventura']]
     return df, tc
 
 
