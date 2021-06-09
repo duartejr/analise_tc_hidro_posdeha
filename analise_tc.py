@@ -7,11 +7,8 @@ Created on Mon May 31 23:18:56 2021
 """
 
 import streamlit as st
-import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from utils import color_palette, scatter_plot, line_plot, select_data
+from utils import scatter_plot, line_plot
 from utils import boxplot_plot, radar_plot, bar_plot
 
 
@@ -30,9 +27,9 @@ def read_data():
 def sidebar(df, tc):
     methods = st.sidebar.multiselect('Métodos:',
                                      ['todos'] + list(tc.columns),
-                                     default='todos')    
+                                     default='todos')
     if 'todos' in methods:
-        methods = list(tc.columns)    
+        methods = list(tc.columns)
     # Oção para filtrar bacias por classificação de tamanho
     size = st.sidebar.selectbox('Tamanho da bacia',
                                 ['todos', 'macro', 'grande', 'média',
@@ -85,8 +82,8 @@ def page2(df, tc):
             line_plot(df, tc, basins, methods, opt1, st)
         if chart_type == 'radar':
             opt1 = st.sidebar.multiselect('Parâmetro:',
-                                     ['todos'] + list(df.columns[1:-1]),
-                                     default='todos')
+                                          ['todos'] + list(df.columns[1:-1]),
+                                          default='todos')
             if not opt1:
                 st.text('Escolha ao menos um parâmetro')
             else:
@@ -95,15 +92,16 @@ def page2(df, tc):
 
 """
 # Análise do Tempo de Concentração
-Comparativo do tempo de concentração entre bacias de acordo com diferentes métodos
+Comparativo do tempo de concentração entre bacias de acordo com diferentes
+métodos
 """
 my_page = st.sidebar.radio('Page Navigation', ['page 1', 'page 2'])
 df, tc = read_data()
 df = df.replace(',', '.')
-st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>',
+         unsafe_allow_html=True)
 
 if my_page == 'page 1':
     page1(df, tc)
 else:
     page2(df, tc)
-

@@ -1,10 +1,6 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import plotly.graph_objects as go
 from charts import scatter, line, radar, bar, box_plot
-
 
 
 color_palette = {'Ventura': "#32964d", 'CHPW':"#83d996", 'Temez':  "#016876",
@@ -62,7 +58,6 @@ def scatter_plot(df, tc, basins, methods, opt1, st):
             pass
         
         df_plot = plot_data(df_select, x_axis, methods, opt1, basins)
-        
         scatter(df_plot, opt1, methods, st)
 
 
