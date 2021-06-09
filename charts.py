@@ -22,8 +22,7 @@ def scatter(df_plot, opt1, methods, st):
     fig = px.scatter(df_plot, x=opt1, y='tc (h)', color="método",
                      color_discrete_sequence=clrs,
                      hover_name='BACIAS',
-                     labels=methods).for_each_trace(lambda t: t.update(
-                                                    name=t.name.split("=")[1]))
+                     labels=methods)
     st.plotly_chart(fig)
 
 
@@ -32,8 +31,7 @@ def line(df_plot, opt1, methods, st):
     fig = px.line(df_plot, x=opt1, y='tc (h)', color="método",
                   color_discrete_sequence=clrs,
                   hover_name='BACIAS',
-                  labels=methods).for_each_trace(lambda t: t.update(
-                                                 name=t.name.split("=")[1]))
+                  labels=methods)
     st.plotly_chart(fig)
 
 
@@ -85,7 +83,6 @@ def box_plot(df_plot, basins, methods, x_axis, st):
     fig = px.box(df_plot, x=x_axis, y='Tc (h)', color=x_axis,
                  color_discrete_sequence=clrs,
                  hover_name=hover, width=width, height=height,
-                 ).for_each_trace(lambda t: t.update(
-                                  name=t.name.split("=")[1]))
+                 )
 
     st.plotly_chart(fig)
