@@ -12,16 +12,15 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from utils import color_palette, scatter_plot, line_plot, select_data
-from utils import boxplot_plot, radar_plot
+from utils import boxplot_plot, radar_plot, bar_plot
 
 
 @st.cache
 def read_data():
-    df = pd.read_csv('base_dados.csv', na_values=[" ", '\xa0'])
-    tc = pd.read_csv('tempo_concentracao.csv',
-                     na_values=['#DIV/0!', '#NUM!', '#VALOR!'],
-                     index_col='BACIAS', sep=';', skiprows=1, decimal=',',
-                     encoding='latin')
+    df = pd.read_csv('base_dados.csv', sep=',', decimal='.',
+                     na_values=['', ' ', '\xa0'])
+    tc = pd.read_csv('tempo_concentracao.csv', index_col='BACIAS',
+                     na_values=['', ' ', '\xa0'])
     tc = tc[['Bransby Willians', 'CHPW', 'Epsey', 'Giandotti', 'Kirpich',
              'Pasini', 'Pickering', 'Picking', 'Temez', 'Ven te Chow',
              'Ventura']]
@@ -65,17 +64,7 @@ def page1(df, tc):
         st.text('Escolha ao menos um método e uma bacia')
     else:
         if my_chart == 'barras':
-            try:
-                df_select = select_data(df, tc, basins, methods)
-                clrs = [color_palette[x] for x in methods]
-        
-                f = sns.catplot(data=df_select, kind='bar', x='Bacias', y='Tc (h)',
-                                hue='Método', aspect=21.7/8.27, palette=clrs)
-                f.set_xticklabels(rotation=90)
-                st.pyplot(f)
-        
-            except ValueError:
-                st.text("Não foi encontrado dados para a seleção feita. Tente novamente.")
+            bar_plot(df, tc, basins, methods, st)
         else:
             boxplot_plot(df, tc, basins, methods, st)
 

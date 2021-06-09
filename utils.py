@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import plotly.express as px
 import plotly.graph_objects as go
+from charts import scatter, line, radar, bar, box_plot
 
 
 
@@ -25,6 +25,30 @@ def select_data(df, tc, basins, methods):
                                             'Tc (h)']).dropna()
 
 
+def plot_data(df, x_axis, methods, opt1, basins):
+    df_plot = pd.DataFrame(())
+    for l in range(len(x_axis)):
+        for method in methods:
+            line = pd.Series([x_axis.values[l], method, df[method][l],
+                              basins[l]])
+            line = pd.DataFrame([line])
+            df_plot = pd.concat([line, df_plot], ignore_index=True)
+    
+    df_plot.columns = [opt1, 'método', 'tc (h)', 'BACIAS']
+    
+    return df_plot
+
+
+def bar_plot(df, tc, basins, methods, st):
+    try:
+        df_select = select_data(df, tc, basins, methods)
+
+        bar(df_select, methods, st)
+
+    except ValueError:
+        st.text("Não foi encontrado dados para a seleção feita. Tente novamente.")
+
+
 def scatter_plot(df, tc, basins, methods, opt1, st):
     try:
         df_select = tc[methods][tc.index.isin(basins)]
@@ -37,17 +61,10 @@ def scatter_plot(df, tc, basins, methods, opt1, st):
         except:
             pass
         
-        fig, ax = plt.subplots()
+        df_plot = plot_data(df_select, x_axis, methods, opt1, basins)
         
-        for method in methods:
-            plt.scatter(x_axis.values[:], df_select[method].values[:], label=method,
-                        color=color_palette[method])
-        
-        plt.xlabel(opt1)
-        plt.ylabel('Tc (h)')
-        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        scatter(df_plot, opt1, methods, st)
 
-        st.pyplot(fig)
 
     except ValueError:
         st.text("Não foram encontrados dados para esta seleção. Tente novamente.")
@@ -64,21 +81,11 @@ def line_plot(df, tc, basins, methods, opt1, st):
             x_axis = pd.to_numeric(x_axis)
         except:
             pass
-        fig, ax = plt.subplots()
         
-        for method in methods:
-            plot_data = pd.DataFrame([x_axis.values[:],
-                                      df_select[method].values[:]]).T
-            plot_data = plot_data.dropna()
-            plot_data = plot_data.sort_values(by=[0])
-            plt.plot(plot_data[0].values[:], plot_data[1].values[:],
-                     color=color_palette[method], label=method)
-
-        plt.xlabel(opt1)
-        plt.ylabel('Tc (h)')
-        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-        st.pyplot(fig)
-        del plot_data
+        df_plot = plot_data(df_select, x_axis, methods, opt1, basins)
+        df_plot = df_plot.sort_values(by=[opt1]).dropna()
+        
+        line(df_plot, opt1, methods, st)
 
     except ValueError:
         st.text("Não foram encontrados dados para esta seleção. Tente novamente.")
@@ -86,22 +93,10 @@ def line_plot(df, tc, basins, methods, opt1, st):
 
 def boxplot_plot(df, tc, basins, methods, st):
     x_axis = st.radio('Eixo x', ['Método', 'Bacias'])
-
     try:
         df_select = select_data(df, tc, basins, methods)
-        clrs = sns.color_palette("Paired", len(basins))
-        
-        if x_axis == 'Método':
-            clrs = [color_palette[x] for x in methods]
-        
-        fig, ax = plt.subplots()
-        
-        f = sns.boxplot(x=x_axis, y='Tc (h)', data=df_select,
-                           palette=clrs)
+        box_plot(df_select, basins, methods, x_axis, st)
 
-        f.set_xticklabels(f.get_xticklabels(),rotation=90)
-        st.pyplot(fig)
-    
     except ValueError:
     
         st.text("Não foi encontrado dados para a seleção feita. Tente novamente.")
@@ -113,48 +108,19 @@ def radar_plot(df, tc, basins, methods, opt1, st):
         df_select = tc[methods][tc.index.isin(basins)]
         x_axis = df[df.BACIAS.isin(basins)]
         
-        try:
-            n = x_axis.astype(str)
-            x_axis = x_axis.str.replace(',', '.')
-            x_axis[x_axis == '\xa0'] = np.nan
-            x_axis = pd.to_numeric(x_axis)
-        except:
-            pass
-        
         correl = pd.DataFrame((), columns=x_axis.columns[1:-1])
         
         for x in correl.columns:
             corr_method = []
             for method in methods:
-                v1 = pd.DataFrame(np.array([df_select[method],
-                                            x_axis[x].replace(',','.')]).T)
+                v1 = pd.DataFrame(np.array([df_select[method],x_axis[x]]).T)
                 v1 = v1.dropna()
                 corr_method.append(v1.corr()[0][1])
             correl[x] = corr_method
         
         correl.insert(0, 'Método', methods)
                 
-        fig = go.Figure()
-        
-        if 'todos' in opt1:
-            opt1 = correl.columns[1:]
-        
-        for property in list(opt1):
-            fig.add_trace(go.Scatterpolar(r=correl[property],
-                                          theta=correl['Método'],
-                                          name=property,
-                                          ))
-        fig.update_layout(
-          polar=dict(
-            radialaxis=dict(
-              visible=True,
-              range=[0, 1]
-            )),
-          showlegend=True,
-          title='Correlação'
-        )
-        
-        st.plotly_chart(fig)
+        radar(correl, opt1, st)
 
     except ValueError:
         st.text("Não foram encontrados dados para esta seleção. Tente novamente.")
