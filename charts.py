@@ -5,14 +5,12 @@ Created on Tue Jun  8 21:41:09 2021
 
 @author: duarte
 """
-import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-import seaborn as sns
 import numpy as np
 
 
-color_palette = {'Ventura': "#32964d", 'CHPW':"#83d996", 'Temez':  "#016876",
+color_palette = {'Ventura': "#32964d", 'CHPW': "#83d996", 'Temez':  "#016876",
                  'Kirpich': "#aedbf0", 'Ven te Chow': "#3444bc",
                  'Pasini': "#f09bf1", 'Picking': "#9525ba",
                  'Pickering': "#528efb", 'Bransby Willians': "#514e72",
@@ -67,8 +65,7 @@ def bar(df_plot, methods, st):
     clrs = [color_palette[x] for x in methods]
     fig = px.bar(df_plot, x='Bacias', y='Tc (h)', color='Método',
                  color_discrete_sequence=clrs, width=1000, height=800,
-                 barmode='group').for_each_trace(lambda t: t.update(
-                                                 name=t.name.split("=")[1]))
+                 barmode='group')
     st.plotly_chart(fig)
 
 
