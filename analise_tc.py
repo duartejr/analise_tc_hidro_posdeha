@@ -71,7 +71,7 @@ def page1(df, tc):
 def page2(df, tc):
     methods, basins, size = sidebar(df, tc)
     st.subheader("Tipo de gráfico")
-    chart_type = st.radio('', ['dispersão', 'linha', 'radar', 'pairplot'])
+    chart_type = st.radio('', ['dispersão', 'linha', 'radar', 'heatmap'])
 
     if not basins or not methods:
         st.text('Escolha ao menos um método e uma bacia')
@@ -84,12 +84,14 @@ def page2(df, tc):
             line_plot(df, tc, basins, methods, opt1, st)
         if chart_type == 'radar':
             opt1 = st.sidebar.multiselect('Parâmetro:',
-                                          ['todos'] + list(df.columns[1:-1]),
-                                          default='todos')
+                                          sorted(list(df.columns[1:-1])),
+                                          default=sorted(list(df.columns[1:-1])))
             if not opt1:
                 st.text('Escolha ao menos um parâmetro')
             else:
                 radar_plot(df, tc, basins, methods, opt1, st)
+        if chart_type == 'heatmap':
+            
 
 
 """
