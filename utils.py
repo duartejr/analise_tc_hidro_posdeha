@@ -123,10 +123,10 @@ def radar_plot(df, tc, basins, methods, opt1, st):
 
 
 def heatmap_plot(df, tc, basins, methods, st, opt1=None, type=1):
-    tc = tc.loc[tc.index.isin(basins)][methods]
 
     try:
         if type == 1:
+            tc = tc.loc[tc.index.isin(basins)][methods]
             st.text("Matriz correlação")
             st.dataframe(tc.corr())
             st.subheader("Mapa de correlação")
