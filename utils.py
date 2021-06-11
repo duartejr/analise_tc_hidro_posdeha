@@ -1,7 +1,15 @@
 import numpy as np
 import pandas as pd
 import plotly.express as px
+from scipy.stats import zscore
 from charts import scatter, line, radar, bar, box_plot
+
+
+def remove_outliers(df):
+    z_scores = zscore(df)
+    abs_z_scores = np.abs(z_scores)
+    filtered_entries = (abs_z_scores < 3).all(axis=1)
+    return df[filtered_entries]
 
 
 def select_data(df, tc, basins, methods):
@@ -42,6 +50,7 @@ def bar_plot(df, tc, basins, methods, st):
 def scatter_plot(df, tc, basins, methods, opt1, st):
     try:
         df_select = tc[methods][tc.index.isin(basins)]
+        
         x_axis = df[df.BACIAS.isin(basins)][opt1]
         try:
             n = x_axis.astype(str)
@@ -61,6 +70,8 @@ def scatter_plot(df, tc, basins, methods, opt1, st):
 def line_plot(df, tc, basins, methods, opt1, st):
     try:
         df_select = tc[methods][tc.index.isin(basins)]
+        df_select = remove_outliers(df_select)
+        df = df[df.BACIAS.isin(df_select.index.values[:])]
         x_axis = df[df.BACIAS.isin(basins)][opt1]
         try:
             n = x_axis.astype(str)
