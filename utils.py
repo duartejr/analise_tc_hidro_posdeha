@@ -126,7 +126,7 @@ def heatmap_plot(df, tc, basins, methods, st):
     x_axis = st.radio('Eixo x', ['Método', 'Bacias'])
 
     try:
-        df_select = select_data(df, tc, basins, methods).corr()
+        df_select = select_data(df, tc, basins, methods)
         st.dataframe(df_select)
         
         fig = px.imshow(df_select)
