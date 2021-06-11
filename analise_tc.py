@@ -92,7 +92,6 @@ def page2(df, tc):
                 radar_plot(df, tc, basins, methods, opt1, st)
         if chart_type == 'heatmap':
             heatmap_plot(df, tc, basins, methods, st, opt1=opt1, type=2)
-            
 
 
 """
