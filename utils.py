@@ -123,13 +123,12 @@ def radar_plot(df, tc, basins, methods, opt1, st):
 
 
 def heatmap_plot(df, tc, basins, methods, st):
-    x_axis = st.radio('Eixo x', ['Método', 'Bacias'])
 
     try:
         df_select = select_data(df, tc, basins, methods)
-        st.dataframe(tc.corr())
+        st.dataframe(tc[methods].corr())
         
-        fig = px.imshow(tc.corr())
+        fig = px.imshow(tc[methods].corr())
         st.plotly_chart(fig)
 
     except ValueError:
