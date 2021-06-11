@@ -15,7 +15,7 @@ color_palette = {'Ventura': "#32964d", 'CHPW': "#83d996", 'Temez':  "#016876",
                  'Pasini': "#f09bf1", 'Picking': "#9525ba",
                  'Pickering': "#528efb", 'Bransby Willians': "#514e72",
                  'Giandotti': "#1ceaf9", 'Epsey': "#0b5313",
-                 'Corps Engineers': "#0b4343", 'Dooge': "#1debf9"}
+                 'Corps Engineers': "#0b4343", 'Dooge': "#2debf9"}
 
 
 def scatter(df_plot, opt1, methods, st):
