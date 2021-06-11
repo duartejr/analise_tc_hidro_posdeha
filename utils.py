@@ -147,7 +147,11 @@ def heatmap_plot(df, tc, basins, methods, st, opt1=None, type=1):
             
             correl.insert(0, 'Método', methods)
             correl = correl.set_index('Método')
-                    
+            
+            st.text("Matriz correlação")
+            st.dataframe(correl)
+            st.subheader("Mapa de correlação")
+            
             fig = px.imshow(correl,
                             color_continuous_scale='spectral',
                             width=1000, height=800)
