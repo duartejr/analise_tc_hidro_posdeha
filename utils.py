@@ -131,7 +131,8 @@ def heatmap_plot(df, tc, basins, methods, st, opt1=None, type=1):
             st.dataframe(tc.corr())
             st.subheader("Mapa de correlação")
             fig = px.imshow(tc.corr())
-            st.plotly_chart(fig, color_continuous_scale='Spectral')
+            st.plotly_chart(fig, color_continuous_scale='spectral',
+                            colorscale='spectral')
         else:
             tc = 0
 
