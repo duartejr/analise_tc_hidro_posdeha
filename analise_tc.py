@@ -8,6 +8,8 @@ Created on Mon May 31 23:18:56 2021
 
 import streamlit as st
 import pandas as pd
+import numpy as np
+from scipy.stats import zscore
 from utils import scatter_plot, line_plot
 from utils import boxplot_plot, radar_plot, bar_plot, heatmap_plot
 
@@ -19,8 +21,13 @@ def read_data():
     tc = pd.read_csv('tempo_concentracao.csv', index_col='BACIAS',
                      na_values=['', ' ', '\xa0'])
     tc = tc[['Bransby Willians', 'CHPW', 'Corps Engineers', 'Dooge',
-             'Epsey', 'Giandotti', 'Kirpich', 'Pasini', 'Pickering', 'Picking',
+             'Epsey', 'Kirpich', 'Pasini', 'Pickering', 'Picking',
              'Temez', 'Ven te Chow', 'Ventura']]
+    z_scores = zscore(tc)
+    abs_z_scores = np.abs(z_scores)
+    filtered_entries = (abs_z_scores < 3).all(axis=1)
+    tc = tc[filtered_entries]
+    df = df[df.BACIAS.isin(tc.index.values[:])]
     return df, tc
 
 
