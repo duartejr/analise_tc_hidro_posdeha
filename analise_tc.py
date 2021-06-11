@@ -31,14 +31,14 @@ def sidebar(df, tc):
     if 'todos' in methods:
         methods = list(tc.columns)
     # Oção para filtrar bacias por classificação de tamanho
-    size = st.sidebar.selectbox('Tamanho da bacia',
+    size = st.sidebar.multiselect('Tamanho da bacia',
                                 ['todos', 'macro', 'grande', 'média',
-                                 'pequena', 'micro'])
+                                 'pequena', 'micro'], default='todos')
 
-    if size != 'todos':
-        select_basins = df[df.Tamanho == size]['BACIAS']
-    else:
+    if 'todos' in size:
         select_basins = df['BACIAS']
+    else:
+        select_basins = df[df.Tamanho.isin(size)]['BACIAS']
 
     basins = st.sidebar.multiselect('Bacias:',
                                     ['todas'] + list(select_basins),
