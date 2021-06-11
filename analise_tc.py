@@ -91,6 +91,7 @@ def page2(df, tc):
             else:
                 radar_plot(df, tc, basins, methods, opt1, st)
         if chart_type == 'heatmap':
+            pass
             
 
 
