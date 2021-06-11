@@ -50,7 +50,8 @@ def bar_plot(df, tc, basins, methods, st):
 def scatter_plot(df, tc, basins, methods, opt1, st):
     try:
         df_select = tc[methods][tc.index.isin(basins)]
-        
+        df_select = remove_outliers(df_select)
+        df = df[df.BACIAS.isin(df_select.index.values[:])]
         x_axis = df[df.BACIAS.isin(basins)][opt1]
         try:
             n = x_axis.astype(str)
