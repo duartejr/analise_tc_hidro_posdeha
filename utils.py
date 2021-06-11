@@ -146,8 +146,9 @@ def heatmap_plot(df, tc, basins, methods, st, opt1=None, type=1):
                 correl[x] = corr_method
             
             correl.insert(0, 'Método', methods)
+            correl = correl.set_index('Método')
                     
-            fig = px.imshow(correl[correl.columns[1:]],
+            fig = px.imshow(correl,
                             color_continuous_scale='spectral')
             st.plotly_chart(fig)
             
