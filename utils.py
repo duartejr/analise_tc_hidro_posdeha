@@ -127,6 +127,7 @@ def heatmap_plot(df, tc, basins, methods, st):
     if x_axis == 'Método':
         x_axis = methods
     else:
+        tc = tc.T
         x_axis = basins
     
     try:
