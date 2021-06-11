@@ -125,6 +125,7 @@ def radar_plot(df, tc, basins, methods, opt1, st):
 def heatmap_plot(df, tc, basins, methods, st):
    
     try:
+        tc = tc.loc[tc.index.isin(basins)]
         st.text("Matriz correlação")
         st.dataframe(tc[methods].corr())
         st.subheader("Mapa de correlação")
