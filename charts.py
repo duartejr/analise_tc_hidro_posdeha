@@ -87,3 +87,6 @@ def box_plot(df_plot, basins, methods, x_axis, st):
                  )
 
     st.plotly_chart(fig)
+
+def heatmap(df_plot, basins, methods, x_axis, st):
+    pass

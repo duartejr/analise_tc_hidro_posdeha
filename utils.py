@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import plotly.express as px
 from charts import scatter, line, radar, bar, box_plot
 
 
@@ -119,3 +120,17 @@ def radar_plot(df, tc, basins, methods, opt1, st):
 
     except ValueError:
         st.text("Não foram encontrados dados para esta seleção. Tente novamente.")
+
+
+def heatmap_plot(df, tc, basins, methods, st):
+    x_axis = st.radio('Eixo x', ['Método', 'Bacias'])
+
+    try:
+        df_select = select_data(df, tc, basins, methods).corr()
+        
+        fig = px.imshow(df_select)
+        st.plotly_chart(fig)
+
+    except ValueError:
+    
+        st.text("Não foi encontrado dados para a seleção feita. Tente novamente.")

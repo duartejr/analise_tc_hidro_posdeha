@@ -9,7 +9,7 @@ Created on Mon May 31 23:18:56 2021
 import streamlit as st
 import pandas as pd
 from utils import scatter_plot, line_plot
-from utils import boxplot_plot, radar_plot, bar_plot
+from utils import boxplot_plot, radar_plot, bar_plot, heatmap_plot
 
 
 @st.cache
@@ -18,9 +18,9 @@ def read_data():
                      na_values=['', ' ', '\xa0'])
     tc = pd.read_csv('tempo_concentracao.csv', index_col='BACIAS',
                      na_values=['', ' ', '\xa0'])
-    tc = tc[['Bransby Willians', 'CHPW', 'Epsey', 'Giandotti', 'Kirpich',
-             'Pasini', 'Pickering', 'Picking', 'Temez', 'Ven te Chow',
-             'Ventura', 'Corps Engineers']]
+    tc = tc[['Bransby Willians', 'CHPW', 'Corps Engineers', 'Dooge',
+             'Epsey', 'Giandotti', 'Kirpich', 'Pasini', 'Pickering', 'Picking',
+             'Temez', 'Ven te Chow', 'Ventura']]
     return df, tc
 
 
@@ -55,13 +55,15 @@ def page1(df, tc):
     # Exibe opção para selecionar métods de cálculo do Tc
     methods, basins, size = sidebar(df, tc)
     st.subheader("Tipo de gráfico")
-    my_chart = st.radio('', ['barras', 'boxplot'])
+    my_chart = st.radio('', ['barras', 'boxplot', 'heatmap'])
 
     if not basins or not methods:
         st.text('Escolha ao menos um método e uma bacia')
     else:
         if my_chart == 'barras':
             bar_plot(df, tc, basins, methods, st)
+        elif my_chart == 'heatmap':
+            heatmap_plot(df, tc, basins, methods, st)
         else:
             boxplot_plot(df, tc, basins, methods, st)
 
