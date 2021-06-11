@@ -41,8 +41,8 @@ def sidebar(df, tc):
         select_basins = df[df.Tamanho.isin(size)]['BACIAS']
 
     basins = st.sidebar.multiselect('Bacias:',
-                                    ['todas'] + list(select_basins),
-                                    default='todas')
+                                    list(select_basins),
+                                    default=list(select_basins))
 
     if 'todas' in basins:
         basins = list(select_basins)
