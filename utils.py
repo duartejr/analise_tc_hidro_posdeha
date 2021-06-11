@@ -124,7 +124,11 @@ def radar_plot(df, tc, basins, methods, opt1, st):
 
 def heatmap_plot(df, tc, basins, methods, st):
     x_axis = st.radio('Variável', ['Método', 'Bacias'])
-
+    if x_axis == 'Método':
+        x_axis = methods
+    else:
+        x_axis = basins
+    
     try:
         st.text("Matriz correlação")
         st.dataframe(tc[x_axis].corr())
