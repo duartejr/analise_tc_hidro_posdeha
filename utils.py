@@ -133,7 +133,23 @@ def heatmap_plot(df, tc, basins, methods, st, opt1=None, type=1):
             fig = px.imshow(tc.corr(), color_continuous_scale='spectral')
             st.plotly_chart(fig)
         else:
-            tc = 0
+            df_select = tc[methods][tc.index.isin(basins)]
+            x_axis = df[df.BACIAS.isin(basins)]
+            correl = pd.DataFrame((), columns=x_axis.columns[1:-1])
+
+            for x in correl.columns:
+                corr_method = []
+                for method in methods:
+                    v1 = pd.DataFrame(np.array([df_select[method],x_axis[x]]).T)
+                    v1 = v1.dropna()
+                    corr_method.append(v1.corr()[0][1])
+                correl[x] = corr_method
+            
+            correl.insert(0, 'Método', methods)
+                    
+            fig = px.imshow(correl, color_continuous_scale='spectral')
+            st.plotly_chart(fig)
+            
 
     except ValueError:
     
