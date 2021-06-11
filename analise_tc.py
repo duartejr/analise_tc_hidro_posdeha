@@ -22,7 +22,7 @@ def read_data():
                      na_values=['', ' ', '\xa0'])
     tc = tc[['Bransby Willians', 'CHPW', 'Corps Engineers', 'Dooge',
              'Epsey', 'Kirpich', 'Pasini', 'Pickering', 'Picking',
-             'Temez', 'Ven te Chow', 'Ventura']]
+             'Temez', 'Ven te Chow', 'Ventura']].dropna()
     z_scores = zscore(tc)
     abs_z_scores = np.abs(z_scores)
     filtered_entries = (abs_z_scores < 3).all(axis=1)
