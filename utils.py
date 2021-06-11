@@ -129,7 +129,7 @@ def heatmap_plot(df, tc, basins, methods, st):
         df_select = select_data(df, tc, basins, methods)
         st.dataframe(tc.corr())
         
-        fig = px.imshow(tc)
+        fig = px.imshow(tc.corr())
         st.plotly_chart(fig)
 
     except ValueError:
