@@ -122,15 +122,18 @@ def radar_plot(df, tc, basins, methods, opt1, st):
         st.text("Não foram encontrados dados para esta seleção. Tente novamente.")
 
 
-def heatmap_plot(df, tc, basins, methods, st):
-   
+def heatmap_plot(df, tc, basins, methods, st, opt1=None, type=1):
+    tc = tc.loc[tc.index.isin(basins)][methods]
+
     try:
-        tc = tc.loc[tc.index.isin(basins)]
-        st.text("Matriz correlação")
-        st.dataframe(tc[methods].corr())
-        st.subheader("Mapa de correlação")
-        fig = px.imshow(tc[methods].corr())
-        st.plotly_chart(fig, colorscale='Viridis')
+        if type == 1:
+            st.text("Matriz correlação")
+            st.dataframe(tc.corr())
+            st.subheader("Mapa de correlação")
+            fig = px.imshow(tc.corr())
+            st.plotly_chart(fig, color_continuous_scale='Spectral')
+        else:
+            tc = 0
 
     except ValueError:
     
