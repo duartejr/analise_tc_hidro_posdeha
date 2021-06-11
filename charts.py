@@ -8,6 +8,7 @@ Created on Tue Jun  8 21:41:09 2021
 import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
+import seaborn as sns
 
 
 color_palette = {'Ventura': "#32964d", 'CHPW': "#83d996", 'Temez':  "#016876",

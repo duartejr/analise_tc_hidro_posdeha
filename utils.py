@@ -60,7 +60,6 @@ def scatter_plot(df, tc, basins, methods, opt1, st):
         df_plot = plot_data(df_select, x_axis, methods, opt1, basins)
         scatter(df_plot, opt1, methods, st)
 
-
     except ValueError:
         st.text("Não foram encontrados dados para esta seleção. Tente novamente.")
 
@@ -119,4 +118,3 @@ def radar_plot(df, tc, basins, methods, opt1, st):
 
     except ValueError:
         st.text("Não foram encontrados dados para esta seleção. Tente novamente.")
-    

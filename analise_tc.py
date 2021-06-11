@@ -69,7 +69,7 @@ def page1(df, tc):
 def page2(df, tc):
     methods, basins, size = sidebar(df, tc)
     st.subheader("Tipo de gráfico")
-    chart_type = st.radio('', ['dispersão', 'linha', 'radar'])
+    chart_type = st.radio('', ['dispersão', 'linha', 'radar', 'pairplot'])
 
     if not basins or not methods:
         st.text('Escolha ao menos um método e uma bacia')
