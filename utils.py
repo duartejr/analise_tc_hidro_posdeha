@@ -123,12 +123,13 @@ def radar_plot(df, tc, basins, methods, opt1, st):
 
 
 def heatmap_plot(df, tc, basins, methods, st):
+    x_axis = st.radio('Variável', ['Método', 'Bacias'])
 
     try:
         st.text("Matriz correlação")
-        st.dataframe(tc[methods].corr())
-        st.text("Mapa de correlação")
-        fig = px.imshow(tc[methods].corr())
+        st.dataframe(tc[x_axis].corr())
+        st.subheader("Mapa de correlação")
+        fig = px.imshow(tc[x_axis].corr())
         st.plotly_chart(fig)
 
     except ValueError:
