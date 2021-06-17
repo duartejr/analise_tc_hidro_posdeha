@@ -41,7 +41,7 @@ def radar(correl, opt1, st):
     
     r_min = 0
     
-    id correl.min() < 0:
+    if correl.min() < 0:
         r_min = correl.min()
 
     if 'todos' in opt1:
