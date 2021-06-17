@@ -51,7 +51,7 @@ def radar(correl, opt1, st):
       polar=dict(
         radialaxis=dict(
           visible=True,
-          range=[0, 1]
+          range=[correl.min(), 1]
         )),
       showlegend=True,
       title='Correlação'
