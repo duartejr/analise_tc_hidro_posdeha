@@ -38,6 +38,11 @@ def line(df_plot, opt1, methods, st):
 
 def radar(correl, opt1, st):
     fig = go.Figure()
+    
+    r_min = correl.min(axis=1).min()
+    
+    if r_min > 0:
+        r_min = 0
 
     if 'todos' in opt1:
         opt1 = correl.columns[1:]
@@ -51,7 +56,7 @@ def radar(correl, opt1, st):
       polar=dict(
         radialaxis=dict(
           visible=True,
-          range=[correl.min(), 1]
+          range=[r_min, 1]
         )),
       showlegend=True,
       title='Correlação'
